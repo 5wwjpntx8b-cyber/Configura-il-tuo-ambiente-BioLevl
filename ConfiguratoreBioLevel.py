@@ -1,7 +1,3 @@
-import streamlit as st
-import pandas as pd
-import altair as alt
-
 # --- STILE GRADIENTE ---
 st.markdown(
     """
@@ -14,23 +10,18 @@ st.markdown(
         background-color: #8000ff;
         color: white;
     }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Logo in alto, centrato
-# due linee vuote
-st.markdown(st.image("LogoBioLevel.png", width=300, use_column_width=True),
-    """
-    <style>
     /* Riduci spazio sopra titolo */
     h1 {
         margin-top: 30px;
     }
     </style>
     """,
-    unsafe_allow_html=True)
+    unsafe_allow_html=True
+)
+
+# Logo in alto, centrato
+st.image("LogoBioLevel.png", width=300)
+
 # Titolo
 st.title("Configura il tuo ambiente BioLevel")
 
