@@ -97,7 +97,7 @@ if st.button("Calcola"):
 
     st.subheader("🌱 CO2 assorbita e risparmio energetico")
     st.write(f"CO2 assorbita: {co2_assorbita:.1f} kg")
-    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno (~{risparmio_euro:.0f} €)")
+    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno
     st.write(f"Equivalente alberi piantati: {alberi:.0f} alberi")
 
     # --- GRAFICO UNICO ---
