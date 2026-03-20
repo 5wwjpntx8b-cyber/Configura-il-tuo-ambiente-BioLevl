@@ -20,7 +20,7 @@ st.markdown(
 )
 
 # Logo in alto, centrato
-st.image("cb7e327c-7c69-40e3-9b4d-d2e7557358fe.png", width=600, use_column_width=True)
+st.image("cb7e327c-7c69-40e3-9b4d-d2e7557358fe.png", width=6000, use_column_width=True)
 
 # Titolo
 st.title("Configura il tuo ambiente BioLevel")
