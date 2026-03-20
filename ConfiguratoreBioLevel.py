@@ -32,7 +32,7 @@ with st.expander("🔧 Selezione Ambiente e Pannello"):
         lambda_pannello = 0.039
     else:
         pannelli_disponibili = ["Panel Wall Bio Level"]
-        spessore_pannello = st.slider("Spessore pannello (mm)", 20, 180, 100, step=10)
+        spessore_pannello = st.slider("Spessore pannello (mm)", 20, 200, 100, step=10)
         lambda_pannello = 0.038
     
     pannello = st.selectbox("Seleziona pannello", pannelli_disponibili, help="Tipo di pannello in canapa")
