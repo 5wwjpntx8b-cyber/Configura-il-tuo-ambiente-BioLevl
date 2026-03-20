@@ -22,7 +22,7 @@ st.markdown(
 # Logo in alto, centrato
 st.image("LogoBioLevel.png", width=300, use_column_width=True)
 # due linee vuote
-st.markdown(st.image("LogoBioLevel.png"
+st.markdown(st.image("LogoBioLevel.png")
     """
     <style>
     /* Riduci spazio sopra titolo */
