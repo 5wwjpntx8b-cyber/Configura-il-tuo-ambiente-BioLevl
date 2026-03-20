@@ -87,7 +87,7 @@ if st.button("Calcola"):
     alberi = co2_assorbita / 15
 
     # --- OUTPUT ---
-    st.subheader("📋 Riepilogo selezioni")
+    st.subheader("📋 Riepilogo")
     st.write(f"Ambiente: {ambiente}")
     st.write(f"Pannello: {pannello} ({spessore_pannello} mm)")
     st.write(f"Intonaco: {intonaco}")
@@ -96,7 +96,7 @@ if st.button("Calcola"):
 
     st.subheader("🌱 CO2 assorbita e risparmio energetico")
     st.write(f"CO2 assorbita: {co2_assorbita:.1f} kg")
-    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno)
+    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno")
     st.write(f"Equivalente alberi piantati: {alberi:.0f} alberi")
 
     # --- GRAFICO UNICO ---
