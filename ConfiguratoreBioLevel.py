@@ -18,7 +18,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("🌿 Calcolatore coibentazione in canapa")
+st.title("🌿 Configura il tuo ambiente BioLevel")
 
 # --- INPUT IN EXPANDER ---
 with st.expander("🔧 Selezione Ambiente e Pannello"):
