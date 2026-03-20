@@ -18,7 +18,8 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
+# Logo in alto, centrato
+st.image("percorso/logo_biolevel.png", width=300, use_column_width=True)
 st.title("🌿 Configura il tuo ambiente BioLevel")
 
 # --- INPUT ---
