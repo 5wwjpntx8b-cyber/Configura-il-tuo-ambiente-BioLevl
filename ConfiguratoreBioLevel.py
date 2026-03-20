@@ -84,7 +84,6 @@ if st.button("Calcola"):
     
     gradi_giorno = 2500
     risparmio_kwh = superficie * (1.5 - U_totale) * gradi_giorno / 1000
-    risparmio_euro = risparmio_kwh * 0.25
     alberi = co2_assorbita / 15
 
     # --- OUTPUT ---
@@ -97,7 +96,7 @@ if st.button("Calcola"):
 
     st.subheader("🌱 CO2 assorbita e risparmio energetico")
     st.write(f"CO2 assorbita: {co2_assorbita:.1f} kg")
-    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno
+    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno)
     st.write(f"Equivalente alberi piantati: {alberi:.0f} alberi")
 
     # --- GRAFICO UNICO ---
