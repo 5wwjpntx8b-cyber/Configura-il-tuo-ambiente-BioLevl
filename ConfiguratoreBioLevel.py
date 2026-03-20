@@ -22,7 +22,16 @@ st.markdown(
 # Logo in alto, centrato
 st.image("LogoBioLevel.png", width=300, use_column_width=True)
 # due linee vuote
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+    /* Riduci spazio sopra titolo */
+    h1 {
+        margin-top: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
 # Titolo
 st.title("Configura il tuo ambiente BioLevel")
 
