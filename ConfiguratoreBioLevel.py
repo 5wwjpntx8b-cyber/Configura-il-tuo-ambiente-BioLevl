@@ -1,3 +1,7 @@
+import streamlit as st
+import pandas as pd
+import altair as alt
+
 # --- STILE GRADIENTE ---
 st.markdown(
     """
