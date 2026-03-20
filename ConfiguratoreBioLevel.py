@@ -18,9 +18,12 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # Logo in alto, centrato
-st.image("cb7e327c-7c69-40e3-9b4d-d2e7557358fe.png", width=300, use_column_width=True)
-st.title("🌿 Configura il tuo ambiente BioLevel")
+st.image("cb7e327c-7c69-40e3-9b4d-d2e7557358fe.png", width=150, use_column_width=True)
+
+# Titolo
+st.title("Configura il tuo ambiente BioLevel")
 
 # --- INPUT ---
 with st.expander("🔧 Selezione Ambiente e Pannello"):
