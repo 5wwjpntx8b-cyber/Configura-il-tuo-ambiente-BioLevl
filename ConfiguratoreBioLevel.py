@@ -31,7 +31,7 @@ st.markdown(
     }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True)
 # Titolo
 st.title("Configura il tuo ambiente BioLevel")
 
