@@ -24,7 +24,7 @@ st.markdown(
 )
 
 # Logo in alto, centrato
-st.image("LogoBioLevel.png", width=600)
+st.image("LogoBioLevel2.png", width=600)
 
 # Titolo
 st.title("Configura il tuo ambiente BioLevel")
