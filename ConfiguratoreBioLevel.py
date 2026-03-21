@@ -1,122 +1,244 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
-# --- STILE GRADIENTE ---
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background: linear-gradient(to top right, #f4c303, #f47c00, #b652f4);
-        color: #000000;
-    }
-    .stButton>button {
-        background-color: #8000ff;
-        color: white;
-    }
-    /* Riduci spazio sopra titolo */
-    h1 {
-        margin-top: 30px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# ---------------- SESSION STATE ----------------
+if "ambiente" not in st.session_state:
+    st.session_state.ambiente = None
+if "lambda_pannello" not in st.session_state:
+    st.session_state.lambda_pannello = None
+if "spessore" not in st.session_state:
+    st.session_state.spessore = 100
+if "intonaco" not in st.session_state:
+    st.session_state.intonaco = None
+if "rasante" not in st.session_state:
+    st.session_state.rasante = None
+if "finitura" not in st.session_state:
+    st.session_state.finitura = None
 
-# Logo in alto, centrato
-st.image("LogoBioLevel2.png", width=600)
+# ---------------- STILE ----------------
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(to top right, #f4c303, #f47c00, #b652f4);
+}
+div.stButton > button {
+    width: 100%;
+    height: 50px;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# Titolo
+# ---------------- LOGO ----------------
+col1, col2, col3 = st.columns([1,2,1])
+with col2:
+    st.image("LogoBioLevel.png")
+
 st.title("Configura il tuo ambiente BioLevel")
 
-# --- INPUT ---
-with st.expander("🔧 Selezione Ambiente e Pannello"):
-    ambiente = st.selectbox("Ambiente da coibentare", ["Intercapedine", "Tetto"], help="Scegli l'ambiente da coibentare")
-    superficie = st.number_input("Superficie da coibentare (mq)", min_value=1.0, step=1.0, help="Inserisci la superficie in metri quadri")
-    
-    if ambiente == "Intercapedine":
-        pannelli_disponibili = ["Panel Flex Bio Level"]
-        spessore_pannello = st.slider("Spessore pannello (mm)", 40, 200, 100, step=10)
-        lambda_pannello = 0.039
-    else:
-        pannelli_disponibili = ["Panel Wall Bio Level"]
-        spessore_pannello = st.slider("Spessore pannello (mm)", 20, 180, 100, step=10)
-        lambda_pannello = 0.038
-    
-    pannello = st.selectbox("Seleziona pannello", pannelli_disponibili, help="Tipo di pannello in canapa")
+# ==================================================
+# STEP 1 - AMBIENTE
+# ==================================================
+st.subheader("Dove vuoi isolare?")
 
-with st.expander("🧱 Selezione Intonaco"):
-    intonaco_dict = {
-        "Nessuno": None,
-        "Termoitonaco Omnia": 0.25,
-        "Bio intonaco naturale": 0.29,
-        "Intonaco in calce pura": 0.53
+col1, col2 = st.columns(2)
+
+with col1:
+    st.image("immagini/tetto.png")
+    if st.button("TETTO"):
+        st.session_state.ambiente = "Tetto"
+        st.session_state.lambda_pannello = 0.038
+
+with col2:
+    st.image("immagini/muro.png")
+    if st.button("INTERCAPEDINE"):
+        st.session_state.ambiente = "Intercapedine"
+        st.session_state.lambda_pannello = 0.039
+
+# ==================================================
+# STEP 2 - SPESSORE
+# ==================================================
+if st.session_state.ambiente:
+
+    st.subheader("Spessore pannello")
+    st.session_state.spessore = st.slider("mm", 40, 200, 100, step=10)
+
+# ==================================================
+# STEP 3 - MATERIALI
+# ==================================================
+if st.session_state.ambiente:
+
+    st.subheader("Materiali")
+
+    # INTONACO
+    st.write("### Intonaco")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.image("immagini/intonaco1.png")
+        if st.button("Termointonaco"):
+            st.session_state.intonaco = 0.25
+
+    with col2:
+        st.image("immagini/intonaco2.png")
+        if st.button("Bio intonaco"):
+            st.session_state.intonaco = 0.29
+
+    with col3:
+        if st.button("Nessuno intonaco"):
+            st.session_state.intonaco = None
+
+    # RASANTE
+    st.write("### Rasante")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.image("immagini/rasante1.png")
+        if st.button("Rasante standard"):
+            st.session_state.rasante = 0.49
+
+    with col2:
+        if st.button("Nessuno rasante"):
+            st.session_state.rasante = None
+
+    # FINITURA
+    st.write("### Finitura")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.image("immagini/marmorino.png")
+        if st.button("Marmorino BioLevel"):
+            st.session_state.finitura = 0.31
+
+    with col2:
+        if st.button("Nessuna finitura"):
+            st.session_state.finitura = None
+
+# ==================================================
+# STEP 4 - LOCALITÀ
+# ==================================================
+if st.session_state.ambiente:
+
+    st.subheader("Località")
+
+    gradi_giorno = {
+        "Milano": 2404,
+        "Torino": 2617,
+        "Genova": 1435,
+        "Bologna": 2259,
+        "Roma": 1415,
+        "Napoli": 1034,
+        "Palermo": 751
     }
-    intonaco = st.selectbox("Seleziona intonaco", list(intonaco_dict.keys()), help="Seleziona il tipo di intonaco o Nessuno")
-    lambda_intonaco = intonaco_dict[intonaco]
 
-with st.expander("🪵 Selezione Rasante"):
-    rasante_dict = {
-        "Nessuno": None,
-        "Rasante standard": 0.49,
-        "Rasante bio": 0.45
-    }
-    rasante = st.selectbox("Seleziona rasante", list(rasante_dict.keys()))
-    lambda_rasante = rasante_dict[rasante]
+    citta = st.selectbox("Seleziona città", list(gradi_giorno.keys()))
+    GG = gradi_giorno[citta]
 
-with st.expander("🎨 Selezione Finitura"):
-    finitura_dict = {
-        "Nessuno": None,
-        "Marmorino di finitura Bio Level": 0.31
-    }
-    finitura = st.selectbox("Seleziona finitura", list(finitura_dict.keys()))
-    lambda_finitura = finitura_dict[finitura]
+# ==================================================
+# CALCOLO
+# ==================================================
+if st.session_state.ambiente:
 
-# Malta fissa
-lambda_malta = 0.36
+    superficie = st.number_input("Superficie (mq)", min_value=1.0)
 
-# --- CALCOLI ---
-if st.button("Calcola"):
-    volume_m3 = superficie * (spessore_pannello / 1000)
-    CO2_per_m3 = 110
-    co2_assorbita = volume_m3 * CO2_per_m3
+def genera_pdf(dati):
+    doc = SimpleDocTemplate("report_biolevel.pdf")
+    styles = getSampleStyleSheet()
 
-    # Lista strati e lambda
-    strati = [(spessore_pannello/1000, lambda_pannello)]
-    if lambda_intonaco: strati.append((0.02, lambda_intonaco))
-    if lambda_rasante: strati.append((0.01, lambda_rasante))
-    if lambda_malta: strati.append((0.01, lambda_malta))
-    if lambda_finitura: strati.append((0.005, lambda_finitura))
+    contenuto = []
+
+    contenuto.append(Paragraph("Report Configurazione BioLevel", styles["Title"]))
+    contenuto.append(Spacer(1, 12))
+
+    for key, value in dati.items():
+        contenuto.append(Paragraph(f"<b>{key}:</b> {value}", styles["Normal"]))
+        contenuto.append(Spacer(1, 8))
+
+    doc.build(contenuto)
+
+    return "report_biolevel.pdf"
     
-    U_totale = 1 / sum([s/l for s,l in strati])
-    
-    gradi_giorno = 2500
-    risparmio_kwh = superficie * (1.5 - U_totale) * gradi_giorno / 1000
-    alberi = co2_assorbita / 15
+    if st.button("Calcola"):
 
-    # --- OUTPUT ---
-    st.subheader("📋 Riepilogo")
-    st.write(f"Ambiente: {ambiente}")
-    st.write(f"Pannello: {pannello} ({spessore_pannello} mm)")
-    st.write(f"Intonaco: {intonaco}")
-    st.write(f"Rasante: {rasante}")
-    st.write(f"Finitura: {finitura}")
+        spessore = st.session_state.spessore / 1000
+        lambda_p = st.session_state.lambda_pannello
 
-    st.subheader("🌱 CO2 assorbita e risparmio energetico")
-    st.write(f"CO2 assorbita: {co2_assorbita:.1f} kg")
-    st.write(f"Risparmio stimato: {risparmio_kwh:.0f} kWh/anno")
-    st.write(f"Equivalente alberi piantati: {alberi:.0f} alberi")
+        # RESISTENZE SUPERFICIALI
+        Rsi = 0.13
+        Rse = 0.04
 
-    # --- GRAFICO UNICO ---
-    df = pd.DataFrame({
-        "Parametro": ["CO2 assorbita (kg)", "Risparmio energetico (kWh)"],
-        "Valore": [co2_assorbita, risparmio_kwh]
-    })
+        strati = [(spessore, lambda_p)]
 
-    chart = alt.Chart(df).mark_bar(size=60).encode(
-        x=alt.X('Parametro', sort=None),
-        y='Valore',
-        color=alt.Color('Parametro', scale=alt.Scale(range=["#00b894", "#0984e3"]))
-    ).properties(height=400)
-    
-    st.altair_chart(chart, use_container_width=True)
+        if st.session_state.intonaco:
+            strati.append((0.02, st.session_state.intonaco))
+        if st.session_state.rasante:
+            strati.append((0.01, st.session_state.rasante))
+        if st.session_state.finitura:
+            strati.append((0.005, st.session_state.finitura))
+
+        R_tot = Rsi + sum([s/l for s,l in strati]) + Rse
+        U_finale = 1 / R_tot
+
+        # U iniziale standard
+        U_iniziale = 1.5
+
+        volume = superficie * spessore
+        co2 = volume * 110
+
+        risparmio = superficie * (U_iniziale - U_finale) * GG / 1000
+        miglioramento = ((U_iniziale - U_finale) / U_iniziale) * 100
+        alberi = co2 / 15
+
+        # OUTPUT
+        st.subheader("📊 Risultati")
+
+        st.write(f"Trasmittanza finale: {U_finale:.3f} W/m²K")
+        st.write(f"Miglioramento: {miglioramento:.0f}%")
+
+        st.write(f"CO2 assorbita: {co2:.1f} kg")
+        st.write(f"Risparmio energetico: {risparmio:.0f} kWh/anno")
+        st.write(f"Equivalente alberi: {alberi:.0f}")
+
+        # GRAFICO
+        df = pd.DataFrame({
+            "Parametro": ["CO2 (kg)", "kWh risparmiati"],
+            "Valore": [co2, risparmio]
+        })
+
+        chart = alt.Chart(df).mark_bar(size=60).encode(
+            x='Parametro',
+            y='Valore',
+            color='Parametro'
+        )
+
+        st.altair_chart(chart, use_container_width=True)
+
+        # CTA
+        st.markdown("""
+        ---
+        ### Hai bisogno di ulteriori informazioni riguardo i nostri prodotti?
+
+        🔗 [Visita il sito BioLevel](https://www.tuosito.it)
+        """)
+                # ---------------- PDF ----------------
+        dati_report = {
+            "Ambiente": st.session_state.ambiente,
+            "Spessore pannello (mm)": st.session_state.spessore,
+            "Trasmittanza finale": f"{U_finale:.3f} W/m²K",
+            "Miglioramento": f"{miglioramento:.0f} %",
+            "CO2 assorbita": f"{co2:.1f} kg",
+            "Risparmio energetico": f"{risparmio:.0f} kWh/anno"
+        }
+
+        file_pdf = genera_pdf(dati_report)
+
+        with open(file_pdf, "rb") as f:
+            st.download_button(
+                label="📄 Scarica report PDF",
+                data=f,
+                file_name="Report_BioLevel.pdf",
+                mime="application/pdf"
+            )
